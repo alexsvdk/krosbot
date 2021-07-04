@@ -1,4 +1,4 @@
-package ru.a1exs.graphit
+package ru.a1exs.graphit.core
 
 /**
  * ChatNode receives and reacts to any chat update

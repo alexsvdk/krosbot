@@ -1,4 +1,4 @@
-package ru.a1exs.graphit
+package ru.a1exs.graphit.core
 
 /**
  * Any update in chat

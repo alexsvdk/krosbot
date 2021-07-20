@@ -2,9 +2,7 @@ package ru.a1exs.graphit.telegram.multibot
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
-import org.telegram.telegrambots.meta.api.objects.InputFile
 import org.telegram.telegrambots.meta.bots.AbsSender
-import org.telegram.telegrambots.meta.generics.TelegramBot
 import ru.a1exs.graphit.multibot.MultiBotSender
 import ru.a1exs.graphit.multibot.imageComponent
 import ru.a1exs.graphit.multibot.message.MessageComponent

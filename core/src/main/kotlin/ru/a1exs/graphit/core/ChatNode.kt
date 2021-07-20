@@ -1,15 +1,15 @@
 package ru.a1exs.graphit.core
 
 /**
- * ChatNode receives and reacts to any chat update
+ * ChatNode
+ * Reacts to ChatUpdate
  */
-
-abstract class ChatNode<U : ChatUpdate, G: Graphit<U>>{
+abstract class ChatNode<U : ChatUpdate, Bot>{
 
     /**
      * Unique chat node id
      */
     open val id = this::class.java.name
 
-    abstract fun receiveUpdate(chatUpdate: U, graphit: G)
+    abstract fun receiveUpdate(chatUpdate: U, bot: Bot)
 }

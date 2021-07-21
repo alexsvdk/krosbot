@@ -3,7 +3,7 @@ package ru.a1exs.graphit.state.cache
 import ru.a1exs.graphit.state.Id
 import ru.a1exs.graphit.state.StateManager
 
-class SimpleCacheManager<T : Id>(val maxSize: Int) : StateManager<T> {
+class LocalCacheManager<T : Id>(val maxSize: Int) : StateManager<T> {
 
     private val map: LinkedHashMap<String, T>
 

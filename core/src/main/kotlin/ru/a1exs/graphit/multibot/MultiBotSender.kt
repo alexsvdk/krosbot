@@ -6,4 +6,8 @@ interface MultiBotSender {
 
     fun sendMessage(chatId: String, data: List<MessageComponent>)
 
+    fun updateMessage(messageId: String, data: List<MessageComponent>)
+
+    fun removeMessage(messageId: String)
+
 }

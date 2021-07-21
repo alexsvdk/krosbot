@@ -8,6 +8,7 @@ import ru.a1exs.graphit.multibot.message.TextMessageComponent
 abstract class MultiBotChatUpdate(chatId: String, messageComponents: List<MessageComponent>) : ChatUpdate(chatId),
     List<MessageComponent> by messageComponents {
 
+    abstract val messageId: String?
     abstract val from: MultiBotUserInfo
 
     open val text: String?

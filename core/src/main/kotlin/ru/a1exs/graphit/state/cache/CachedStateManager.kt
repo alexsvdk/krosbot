@@ -18,5 +18,4 @@ class CachedStateManager<T : Id>(
         stateManager[id] = data
     }
 
-
 }

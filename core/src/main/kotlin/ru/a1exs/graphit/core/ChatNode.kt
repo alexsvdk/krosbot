@@ -4,12 +4,14 @@ package ru.a1exs.graphit.core
  * ChatNode
  * Reacts to ChatUpdate
  */
-abstract class ChatNode<U : ChatUpdate, Bot>{
+interface ChatNode<U : ChatUpdate, Bot> : ChatUpdateReceiver<U, Bot> {
 
     /**
      * Unique chat node id
      */
-    open val id = this::class.java.name
+    val id
+        get() = this::class.java.name
 
-    abstract fun receiveUpdate(chatUpdate: U, bot: Bot)
+    fun addUpdateCreator(chatUpdateCreator: ChatUpdateCreator<U, Bot>) = chatUpdateCreator.addListener(this)
+    fun removeUpdateCreator(chatUpdateCreator: ChatUpdateCreator<U, Bot>) = chatUpdateCreator.removeListener(this)
 }

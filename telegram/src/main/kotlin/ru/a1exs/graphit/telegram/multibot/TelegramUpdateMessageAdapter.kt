@@ -18,7 +18,7 @@ class TelegramUpdateMessageAdapter(
     private val bot: TelegramBot,
 ) : MultiBotChatUpdate(message.chatId.toString()) {
 
-    override val userInfo = TelegramUserInfoAdapter(message.from, sender, bot)
+    override val from = TelegramUserInfoAdapter(message.from, sender, bot)
     override val messageComponents = mutableListOf<MessageComponent>().apply {
 
         if (message.hasText())

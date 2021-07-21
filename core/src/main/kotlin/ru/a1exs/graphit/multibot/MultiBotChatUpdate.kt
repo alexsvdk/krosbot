@@ -7,7 +7,7 @@ import ru.a1exs.graphit.multibot.message.TextMessageComponent
 
 abstract class MultiBotChatUpdate(chatId: String) : ChatUpdate(chatId) {
 
-    abstract val userInfo: MultiBotUserInfo
+    abstract val from: MultiBotUserInfo
     abstract val messageComponents: List<MessageComponent>
     val isNotEmpty get() = messageComponents.isNotEmpty()
 

@@ -9,12 +9,11 @@ import ru.a1exs.graphit.multibot.message.MessageComponent
 import ru.a1exs.graphit.multibot.textComponent
 import ru.a1exs.graphit.telegram.inputFile
 
-class TelegramSenderAdapter(
+class TelegramMultiBotSenderAdapter(
     val sender: AbsSender,
 ) : MultiBotSender {
 
     override fun sendMessage(chatId: String, data: List<MessageComponent>) {
-        validateMessageComponents(data)
         var textSent = false
 
         data.imageComponent?.let {
@@ -27,7 +26,7 @@ class TelegramSenderAdapter(
             textSent = true
         }
 
-        if(!textSent) data.textComponent?.let {
+        if (!textSent) data.textComponent?.let {
             val sendMessage = SendMessage.builder()
                 .chatId(chatId)
                 .text(it.text)

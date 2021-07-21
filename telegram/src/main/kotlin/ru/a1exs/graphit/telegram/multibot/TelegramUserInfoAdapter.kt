@@ -9,22 +9,22 @@ import ru.a1exs.graphit.multibot.MultiBotUserInfo
 import ru.a1exs.graphit.telegram.maxSize
 
 class TelegramUserInfoAdapter(
-    val user: User,
+    val rawUser: User,
     private val sender: AbsSender,
     private val bot: TelegramBot,
 ) : MultiBotUserInfo {
 
     override val firstName
-        get() = user.firstName
+        get() = rawUser.firstName
 
     override val lastName
-        get() = user.lastName
+        get() = rawUser.lastName
 
     override val nickName
-        get() = user.userName
+        get() = rawUser.userName
 
     override val imageUrl: String? by lazy {
-        val photo = sender.execute(GetUserProfilePhotos(user.id, 0, 1)).photos.firstOrNull() ?: return@lazy null
+        val photo = sender.execute(GetUserProfilePhotos(rawUser.id, 0, 1)).photos.firstOrNull() ?: return@lazy null
         return@lazy sender.execute(GetFile(photo.maxSize()?.fileId ?: return@lazy null)).getFileUrl(bot.botToken)
     }
 

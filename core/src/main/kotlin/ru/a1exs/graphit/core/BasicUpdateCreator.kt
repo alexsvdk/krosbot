@@ -10,4 +10,6 @@ class BasicUpdateCreator<U : ChatUpdate, Bot> : ChatUpdateCreator<U, Bot> {
     override fun removeListener(listener: ChatUpdateReceiver<U, Bot>) =
         listeners.remove(listener)
 
+    fun publishChatUpdate(update: U, bot: Bot) = listeners.forEach { it.receiveUpdate(update, bot) }
+
 }

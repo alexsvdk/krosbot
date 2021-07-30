@@ -8,4 +8,4 @@
  */
 
 rootProject.name = "graphit"
-include("core", "telegram")
+include(":core", ":telegram")

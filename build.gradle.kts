@@ -5,8 +5,6 @@ version = libVersion
 group = libGroup
 
 subprojects {
-    group = libGroup
-    version = libVersion
     tasks.withType<Jar> {
         manifest {
             attributes(
@@ -17,6 +15,12 @@ subprojects {
             )
         }
     }
+    repositories {
+        mavenLocal()
+        maven { setUrl("https://jitpack.io") }
+    }
+    group = libGroup
+    version = libVersion
 }
 
 tasks.register("buildAll") {

@@ -4,12 +4,21 @@ val libGroup = properties["group"] as String
 version = libVersion
 group = libGroup
 
+repositories {
+    mavenCentral()
+}
+
 plugins {
     kotlin("jvm") version "1.5.21"
     `java-library`
     `maven-publish`
 }
 
+tasks.publishToMavenLocal{
+    subprojects {
+        dependsOn(":$name:publishToMavenLocal")
+    }
+}
 
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
@@ -31,15 +40,28 @@ subprojects {
         artifacts {
             archives(sourcesJar)
             archives(javadocJar)
-            archives(jar)
         }
-    }
-    repositories {
-        mavenLocal()
-        maven { setUrl("https://jitpack.io") }
     }
     group = libGroup
     version = libVersion
+
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                groupId = libGroup
+                artifactId = this@subprojects.name
+                version = libVersion
+
+                from(components["java"])
+            }
+        }
+    }
+
 }
 
 tasks.register("buildAll") {

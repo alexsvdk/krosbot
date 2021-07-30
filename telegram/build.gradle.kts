@@ -31,6 +31,6 @@ dependencies {
     api("org.apache.commons:commons-math3:3.6.1")
 
     implementation(project(":core"))
-    implementation("org.telegram:telegrambots:5.3.0")
+    api("org.telegram:telegrambots:5.3.0")
 
 }

@@ -6,12 +6,6 @@
  * User Manual available at https://docs.gradle.org/7.1/userguide/building_java_projects.html
  */
 
-plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.5.21"
-    `java-library`
-    `maven-publish`
-}
-
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()

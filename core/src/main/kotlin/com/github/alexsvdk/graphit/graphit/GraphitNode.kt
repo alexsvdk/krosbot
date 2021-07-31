@@ -19,6 +19,6 @@ open class GraphitNode<U : ChatUpdate, Bot>(
 
     override fun receiveUpdate(chatUpdate: U, bot: Bot) {
         val nodeState = stateManager[chatUpdate] ?: GraphitNodeState(chatUpdate.chatId, initialNode.id)
-        nodes[nodeState.id]?.receiveUpdate(chatUpdate, bot)
+        nodes[nodeState.nodeId]?.receiveUpdate(chatUpdate, bot)
     }
 }

@@ -2,8 +2,6 @@ package com.github.alexsvdk.graphit.state
 
 interface StateManager<T: Id> {
 
-    val size: Long
-
     operator fun get(id: String): T?
 
     operator fun set(id: String, data: T)

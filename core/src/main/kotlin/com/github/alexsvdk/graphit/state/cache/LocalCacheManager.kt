@@ -8,11 +8,11 @@ class LocalCacheManager<T : Id>(val maxSize: Int) : StateManager<T> {
     private val map: LinkedHashMap<String, T>
 
     init {
-        assert(maxSize>0)
+        assert(maxSize > 0)
         map = LinkedHashMap(maxSize)
     }
 
-    override val size
+    val size
         get() = map.size.toLong()
 
     override fun get(id: String): T? = map[id]

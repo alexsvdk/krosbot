@@ -8,9 +8,6 @@ class CachedStateManager<T : Id>(
         private val cacheManager: StateManager<T>
 ) : StateManager<T> {
 
-    override val size
-        get() = stateManager.size
-
     override fun get(id: String): T? = cacheManager[id] ?: stateManager[id]?.also { cacheManager.save(it) }
 
     override fun set(id: String, data: T) {

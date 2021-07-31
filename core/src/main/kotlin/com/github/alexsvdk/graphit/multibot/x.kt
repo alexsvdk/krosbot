@@ -4,6 +4,8 @@ import com.github.alexsvdk.graphit.multibot.message.ImageMessageComponent
 import com.github.alexsvdk.graphit.multibot.message.MessageComponent
 import com.github.alexsvdk.graphit.multibot.message.PollMessageComponent
 import com.github.alexsvdk.graphit.multibot.message.TextMessageComponent
+import com.github.alexsvdk.graphit.state.Id
+import com.github.alexsvdk.graphit.state.StateManager
 
 val List<MessageComponent>.textComponent: TextMessageComponent?
     get() = filterIsInstance<TextMessageComponent>().firstOrNull()

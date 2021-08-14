@@ -10,4 +10,4 @@ data class PollMessageComponent(
     val isClosed: Boolean = false,
     val isAnonymous: Boolean = false,
     val question: String? = null
-) : MessageComponent()
+) : MessageComponent

@@ -1,4 +1,4 @@
-package com.github.alexsvdk.graphit.graphit
+package com.github.alexsvdk.graphit.nodes.graphit
 
 import com.github.alexsvdk.graphit.state.Id
 

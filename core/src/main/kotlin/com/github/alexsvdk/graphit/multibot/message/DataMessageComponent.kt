@@ -7,7 +7,7 @@ import java.net.URL
 open class DataMessageComponent(
     val inputStream: InputStream,
     val name: String? = null,
-) : MessageComponent() {
+) : MessageComponent {
     companion object {
         fun fromFile(file: File): DataMessageComponent = DataMessageComponent(file.inputStream())
         fun fromUrl(url: URL): DataMessageComponent = DataMessageComponent(url.openStream())

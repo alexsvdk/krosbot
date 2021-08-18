@@ -1,12 +1,12 @@
 package com.github.alexsvdk.graphit.telegram.multibot
 
+import com.github.alexsvdk.graphit.multibot.MultiBotChatUpdate
+import com.github.alexsvdk.graphit.multibot.message.*
+import com.github.alexsvdk.graphit.telegram.maxSize
 import org.telegram.telegrambots.meta.api.methods.GetFile
 import org.telegram.telegrambots.meta.api.objects.Message
 import org.telegram.telegrambots.meta.bots.AbsSender
 import org.telegram.telegrambots.meta.generics.TelegramBot
-import com.github.alexsvdk.graphit.multibot.MultiBotChatUpdate
-import com.github.alexsvdk.graphit.multibot.message.*
-import com.github.alexsvdk.graphit.telegram.maxSize
 
 class TelegramMessageAdapter(
     val rawMessage: Message,

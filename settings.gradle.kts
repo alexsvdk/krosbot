@@ -10,6 +10,6 @@
 rootProject.name = "graphit"
 include(
     ":core",
-    ":telegram",
+    ":telegram", ":vk",
     ":mongo",
 )

@@ -31,6 +31,7 @@ open class VkGraphitBot(
                 }
                 updateCreator.publishChatUpdate(VkMessageAdapter(msg), sender)
             } catch (e: Exception) {
+                e.printStackTrace()
                 if (pollingDelayMs > 0) Thread.sleep(pollingDelayMs)
             }
         }

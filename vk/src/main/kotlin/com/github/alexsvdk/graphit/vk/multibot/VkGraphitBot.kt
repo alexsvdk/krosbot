@@ -1,6 +1,7 @@
 package com.github.alexsvdk.graphit.vk.multibot
 
 import com.github.alexsvdk.graphit.core.BasicUpdateCreator
+import com.github.alexsvdk.graphit.core.ChatUpdateCreator
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
 import com.vk.api.sdk.exceptions.ClientException
@@ -13,7 +14,7 @@ open class VkGraphitBot(
     accessToken: String,
     private val pollingDelayMs: Long = 1000,
     private val updateCreator: BasicUpdateCreator<VkMessageAdapter, VkMultiBotSenderAdapter> = BasicUpdateCreator(),
-) {
+) : ChatUpdateCreator<VkMessageAdapter, VkMultiBotSenderAdapter> by updateCreator {
     private val actor = GroupActor(groupId, accessToken)
     private val sender = VkMultiBotSenderAdapter(vk, actor)
 

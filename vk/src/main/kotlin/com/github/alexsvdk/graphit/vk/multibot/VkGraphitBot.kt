@@ -7,14 +7,13 @@ import com.vk.api.sdk.exceptions.ClientException
 import com.vk.api.sdk.objects.messages.Message
 
 
-abstract class VkGraphitBot(
+open class VkGraphitBot(
+    private val vk: VkApiClient,
+    groupId: Int,
+    accessToken: String,
     private val pollingDelayMs: Long = 1000,
     private val updateCreator: BasicUpdateCreator<VkMessageAdapter, VkMultiBotSenderAdapter> = BasicUpdateCreator(),
 ) {
-    protected abstract val vk: VkApiClient
-    protected abstract val groupId: Int
-    protected abstract val accessToken: String
-
     private val actor = GroupActor(groupId, accessToken)
     private val sender = VkMultiBotSenderAdapter(vk, actor)
 

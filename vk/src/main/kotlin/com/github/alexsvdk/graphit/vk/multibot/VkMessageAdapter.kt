@@ -6,7 +6,7 @@ import com.github.alexsvdk.graphit.multibot.message.*
 import com.vk.api.sdk.objects.messages.Message
 
 class VkMessageAdapter(val raw: Message) : MultiBotChatUpdate(
-    (raw.chatId?:raw.fromId) .toString(),
+    (raw.chatId?:raw.userId) .toString(),
     extractComponents(raw)
 ) {
 

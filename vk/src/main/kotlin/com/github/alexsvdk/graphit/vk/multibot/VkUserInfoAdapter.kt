@@ -1,19 +1,27 @@
 package com.github.alexsvdk.graphit.vk.multibot
 
 import com.github.alexsvdk.graphit.multibot.MultiBotUserInfo
+import com.vk.api.sdk.client.VkApiClient
+import com.vk.api.sdk.client.actors.GroupActor
 import com.vk.api.sdk.objects.messages.Message
 
 class VkUserInfoAdapter(
-    val raw: Message
+    val raw: Message,
+    val vk: VkApiClient,
+    val actor: GroupActor,
 ) : MultiBotUserInfo {
 
+    val userInfo by lazy {
+        vk.users().get(actor).userIds(raw.userId.toString()).execute().firstOrNull()
+    }
+
     override val firstName: String?
-        get() = TODO("Not yet implemented")
+        get() = userInfo?.firstName
     override val lastName: String?
-        get() = TODO("Not yet implemented")
-    override val nickName: String?
-        get() = TODO("Not yet implemented")
+        get() = userInfo?.lastName
+    override val nickName: String
+        get() = userInfo?.nickname ?: raw.userId.toString()
     override val imageUrl: String?
-        get() = TODO("Not yet implemented")
+        get() = userInfo?.photoMaxOrig
 
 }

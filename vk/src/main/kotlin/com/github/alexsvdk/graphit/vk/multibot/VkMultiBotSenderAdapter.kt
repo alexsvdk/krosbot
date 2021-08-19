@@ -19,6 +19,23 @@ class VkMultiBotSenderAdapter(
             sendQuery.lng(it.longitude.toFloat())
         }
 
+        data.filterIsInstance<KeyboardMessageComponent>().forEach {
+            val keyboard = mapOf(
+                "one_time" to false,
+                "inline" to false,
+                "buttons" to it.buttons.map {it.map {
+                    mapOf(
+                        "action" to mapOf(
+                            "type" to "text",
+                            "label" to it,
+                        ),
+                        "color" to "primary",
+                    )
+                }}
+            )
+            sendQuery.unsafeParam("keyboard", keyboard)
+        }
+
         data.textComponent?.let {
             sendQuery.message(it.text)
         }

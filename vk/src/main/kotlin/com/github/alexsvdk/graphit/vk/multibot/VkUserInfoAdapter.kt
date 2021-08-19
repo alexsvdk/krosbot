@@ -20,7 +20,7 @@ class VkUserInfoAdapter(
     override val lastName: String?
         get() = userInfo?.lastName
     override val nickName: String
-        get() = userInfo?.nickname ?: raw.userId.toString()
+        get() = "id${raw.userId}"
     override val imageUrl: String?
         get() = userInfo?.photoMaxOrig
 

@@ -1,7 +1,9 @@
 package com.github.alexsvdk.graphit.vk.multibot
 
 import com.github.alexsvdk.graphit.multibot.MultiBotSender
-import com.github.alexsvdk.graphit.multibot.message.*
+import com.github.alexsvdk.graphit.multibot.message.KeyboardMessageComponent
+import com.github.alexsvdk.graphit.multibot.message.LocationMessageComponent
+import com.github.alexsvdk.graphit.multibot.message.MessageComponent
 import com.github.alexsvdk.graphit.multibot.textComponent
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
@@ -23,15 +25,18 @@ class VkMultiBotSenderAdapter(
             val keyboard = mapOf(
                 "one_time" to false,
                 "inline" to false,
-                "buttons" to it.buttons.map {it.map {
-                    mapOf(
-                        "action" to mapOf(
-                            "type" to "text",
-                            "label" to it,
-                        ),
-                        "color" to "primary",
-                    )
-                }}
+                "buttons" to it.buttons.map {
+                    it.map {
+                        mapOf(
+                            "action" to mapOf(
+                                "type" to "text",
+                                "label" to it,
+                                "payload" to it
+                            ),
+                            "color" to "primary",
+                        )
+                    }.toList()
+                }.toList()
             )
             sendQuery.unsafeParam("keyboard", keyboard)
         }

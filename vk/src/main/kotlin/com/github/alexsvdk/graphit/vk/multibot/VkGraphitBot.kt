@@ -29,7 +29,7 @@ open class VkGraphitBot(
                     if (pollingDelayMs > 0) Thread.sleep(pollingDelayMs)
                     continue
                 }
-                updateCreator.publishChatUpdate(VkMessageAdapter(msg), sender)
+                updateCreator.publishChatUpdate(VkMessageAdapter(msg, vk, actor), sender)
             } catch (e: Exception) {
                 e.printStackTrace()
                 if (pollingDelayMs > 0) Thread.sleep(pollingDelayMs)

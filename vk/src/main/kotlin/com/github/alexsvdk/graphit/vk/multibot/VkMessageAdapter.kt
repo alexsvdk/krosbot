@@ -3,16 +3,22 @@ package com.github.alexsvdk.graphit.vk.multibot
 import com.github.alexsvdk.graphit.multibot.MultiBotChatUpdate
 import com.github.alexsvdk.graphit.multibot.MultiBotUserInfo
 import com.github.alexsvdk.graphit.multibot.message.*
+import com.vk.api.sdk.client.VkApiClient
+import com.vk.api.sdk.client.actors.GroupActor
 import com.vk.api.sdk.objects.messages.Message
 
-class VkMessageAdapter(val raw: Message) : MultiBotChatUpdate(
+class VkMessageAdapter(
+    val raw: Message,
+    vk: VkApiClient,
+    actor: GroupActor,
+    ) : MultiBotChatUpdate(
     (raw.chatId?:raw.userId) .toString(),
     extractComponents(raw)
 ) {
 
     override val messageId: String
         get() = raw.randomId.toString()
-    override val from: MultiBotUserInfo = VkUserInfoAdapter(raw)
+    override val from: MultiBotUserInfo = VkUserInfoAdapter(raw, vk, actor)
 }
 
 

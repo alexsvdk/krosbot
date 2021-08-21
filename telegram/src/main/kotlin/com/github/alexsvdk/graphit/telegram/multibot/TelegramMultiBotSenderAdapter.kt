@@ -18,9 +18,9 @@ class TelegramMultiBotSenderAdapter(
 
     override fun sendMessage(chatId: String, data: List<MessageComponent>) {
 
-        var textSent = false
+        var textToSend = data.textComponent?.text
 
-        var replyMarkup = data.filterIsInstance<KeyboardMessageComponent>().firstOrNull()?.let {
+        var replyMarkupToSend = data.filterIsInstance<KeyboardMessageComponent>().firstOrNull()?.let {
             ReplyKeyboardMarkup(
                 it.buttons.map { KeyboardRow(it.map { KeyboardButton(it) }) }
             )
@@ -30,13 +30,13 @@ class TelegramMultiBotSenderAdapter(
             val send = SendPhoto.builder().apply {
                 chatId(chatId)
                 photo(it.inputFile)
-                if (!textSent && data.textComponent != null) {
-                    caption(data.textComponent!!.text)
-                    textSent = true
+                if (textToSend != null) {
+                    caption(textToSend)
+                    textToSend = null
                 }
-                if (replyMarkup != null) {
-                    replyMarkup(replyMarkup)
-                    replyMarkup = null
+                if (replyMarkupToSend != null) {
+                    replyMarkup(replyMarkupToSend)
+                    replyMarkupToSend = null
                 }
             }.build()
             sender.execute(send)
@@ -47,13 +47,13 @@ class TelegramMultiBotSenderAdapter(
             val send = SendVideo.builder().apply {
                 chatId(chatId)
                 video(it.inputFile)
-                if (!textSent && data.textComponent != null) {
+                if (textToSend != null) {
                     caption(data.textComponent!!.text)
-                    textSent = true
+                    textToSend = null
                 }
-                if (replyMarkup != null) {
-                    replyMarkup(replyMarkup)
-                    replyMarkup = null
+                if (replyMarkupToSend != null) {
+                    replyMarkup(replyMarkupToSend)
+                    replyMarkupToSend = null
                 }
             }.build()
             sender.execute(send)
@@ -63,13 +63,13 @@ class TelegramMultiBotSenderAdapter(
             val send = SendDocument.builder().apply {
                 chatId(chatId)
                 document(it.inputFile)
-                if (!textSent && data.textComponent != null) {
+                if (textToSend != null) {
                     caption(data.textComponent!!.text)
-                    textSent = true
+                    textToSend = null
                 }
-                if (replyMarkup != null) {
-                    replyMarkup(replyMarkup)
-                    replyMarkup = null
+                if (replyMarkupToSend != null) {
+                    replyMarkup(replyMarkupToSend)
+                    replyMarkupToSend = null
                 }
             }.build()
             sender.execute(send)
@@ -79,13 +79,13 @@ class TelegramMultiBotSenderAdapter(
             val send = SendAudio.builder().apply {
                 chatId(chatId)
                 audio(it.inputFile)
-                if (!textSent && data.textComponent != null) {
+                if (textToSend != null) {
                     caption(data.textComponent!!.text)
-                    textSent = true
+                    textToSend = null
                 }
-                if (replyMarkup != null) {
-                    replyMarkup(replyMarkup)
-                    replyMarkup = null
+                if (replyMarkupToSend != null) {
+                    replyMarkup(replyMarkupToSend)
+                    replyMarkupToSend = null
                 }
             }.build()
             sender.execute(send)
@@ -98,9 +98,9 @@ class TelegramMultiBotSenderAdapter(
                 isClosed(it.isClosed)
                 isAnonymous(it.isAnonymous)
                 options(it.voteData.map { it.optionName })
-                if (replyMarkup != null) {
-                    replyMarkup(replyMarkup)
-                    replyMarkup = null
+                if (replyMarkupToSend != null) {
+                    replyMarkup(replyMarkupToSend)
+                    replyMarkupToSend = null
                 }
             }
                 .build()
@@ -111,28 +111,21 @@ class TelegramMultiBotSenderAdapter(
             val send = SendLocation.builder().apply {
                 latitude(it.latitude)
                 longitude(it.longitude)
-                if (replyMarkup != null) {
-                    replyMarkup(replyMarkup)
-                    replyMarkup = null
-                }
-            }
-                .build()
+            }.build()
             sender.execute(send)
         }
 
-        if (!textSent) data.textComponent?.let {
+        if (textToSend != null) {
             val sendMessage = SendMessage.builder().apply {
                 chatId(chatId)
-                text(it.text)
-                if (replyMarkup != null) {
-                    replyMarkup(replyMarkup)
-                    replyMarkup = null
+                if (replyMarkupToSend != null) {
+                    replyMarkup(replyMarkupToSend)
+                    replyMarkupToSend = null
                 }
-            }.build()
+            }.text(textToSend!!).build()
             sender.execute(sendMessage)
-            textSent = true
+            textToSend = null
         }
-
     }
 
     override fun updateMessage(chatId: String, messageId: String, data: List<MessageComponent>) {
@@ -140,7 +133,7 @@ class TelegramMultiBotSenderAdapter(
     }
 
     override fun removeMessage(chatId: String, messageId: String) {
-        val deleteMessage = DeleteMessage(chatId,messageId.toInt())
+        val deleteMessage = DeleteMessage(chatId, messageId.toInt())
         sender.execute(deleteMessage)
     }
 

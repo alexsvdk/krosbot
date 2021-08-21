@@ -109,8 +109,13 @@ class TelegramMultiBotSenderAdapter(
 
         data.filterIsInstance<LocationMessageComponent>().forEach {
             val send = SendLocation.builder().apply {
+                chatId(chatId)
                 latitude(it.latitude)
                 longitude(it.longitude)
+                if (replyMarkupToSend != null) {
+                    replyMarkup(replyMarkupToSend)
+                    replyMarkupToSend = null
+                }
             }.build()
             sender.execute(send)
         }

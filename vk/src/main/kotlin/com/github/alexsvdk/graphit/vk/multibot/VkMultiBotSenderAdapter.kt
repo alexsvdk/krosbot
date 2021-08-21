@@ -35,7 +35,6 @@ class VkMultiBotSenderAdapter(
                                 "action" to mapOf(
                                     "type" to "text",
                                     "label" to it,
-                                    "payload" to it
                                 ),
                                 "color" to "primary",
                             )

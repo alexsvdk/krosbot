@@ -1,15 +1,15 @@
 package com.github.alexsvdk.graphit.state
 
-import com.github.alexsvdk.graphit.core.ChatUpdate
+import com.github.alexsvdk.graphit.core.bot.ChatUpdate
 
-interface StateManager<T: Id> {
+interface StateManager<T> {
 
     operator fun get(id: String): T?
 
-    operator fun get(update: ChatUpdate) = get(update.chatId)
+    operator fun get(update: ChatUpdate) = get(update.chatInfo.id)
 
     operator fun set(id: String, data: T)
 
-    fun save (data: T) = set(data.id, data)
+    fun save (state: ChatState<T>) = set(state.chatId, state.data)
 
 }

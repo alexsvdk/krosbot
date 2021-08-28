@@ -1,18 +1,27 @@
 package com.github.alexsvdk.graphit.state.cache
 
-import com.github.alexsvdk.graphit.state.Id
+import com.github.alexsvdk.graphit.state.ChatState
 import com.github.alexsvdk.graphit.state.StateManager
 
-class CachedStateManager<T : Id>(
-        private val stateManager: StateManager<T>,
-        private val cacheManager: StateManager<T>
+open class CachedStateManager<T>(
+    private val sourceManager: StateManager<T>,
+    private val cacheManager: StateManager<T> = LocalCacheManager(maxSize = 100),
+    private val lazySave: Boolean = false
 ) : StateManager<T> {
 
-    override fun get(id: String): T? = cacheManager[id] ?: stateManager[id]?.also { cacheManager.save(it) }
+    init {
+        if (cacheManager is TemporaryStateManager<T>)
+            cacheManager.setOnRemoveCallback(::saveToSource)
+    }
+
+    override fun get(id: String): T? = cacheManager[id] ?: sourceManager[id]?.also { cacheManager[id] = it }
 
     override fun set(id: String, data: T) {
         cacheManager[id] = data
-        stateManager[id] = data
+        if (!lazySave)
+            sourceManager[id] = data
     }
+
+    protected fun saveToSource(chatState: ChatState<T>) {}
 
 }

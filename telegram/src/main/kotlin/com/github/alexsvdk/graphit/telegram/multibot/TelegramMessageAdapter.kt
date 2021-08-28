@@ -1,49 +1,76 @@
 package com.github.alexsvdk.graphit.telegram.multibot
 
-import com.github.alexsvdk.graphit.multibot.MultiBotChatUpdate
-import com.github.alexsvdk.graphit.multibot.message.*
-import com.github.alexsvdk.graphit.telegram.maxSize
-import org.telegram.telegrambots.meta.api.methods.GetFile
+import com.github.alexsvdk.graphit.core.bot.ChatUpdate
+import com.github.alexsvdk.graphit.core.message.DataMessageComponent
+import com.github.alexsvdk.graphit.core.message.IncomingLocation
+import com.github.alexsvdk.graphit.core.message.IncomingMessageComponent
+import com.github.alexsvdk.graphit.core.message.IncomingText
 import org.telegram.telegrambots.meta.api.objects.Message
 import org.telegram.telegrambots.meta.bots.AbsSender
 import org.telegram.telegrambots.meta.generics.TelegramBot
 
 class TelegramMessageAdapter(
     val rawMessage: Message,
-    sender: AbsSender,
-    bot: TelegramBot,
-) : MultiBotChatUpdate(rawMessage.chatId.toString(), extractMessageComponents(rawMessage, sender, bot)) {
+    private val sender: AbsSender,
+    private val bot: TelegramBot,
+) : ChatUpdate {
 
-    override val messageId: String
-        get() = rawMessage.messageId.toString()
+    override val messageId by lazy { rawMessage.messageId.toString() }
 
-    override val from = TelegramUserInfoAdapter(rawMessage.from, sender, bot)
+    override val chatInfo by lazy { TelegramChatInfoAdapter(rawMessage.chat) }
 
-}
+    override val from by lazy { TelegramUserInfoAdapter(rawMessage.from, sender, bot) }
 
-private fun extractMessageComponents(message: Message, sender: AbsSender, bot: TelegramBot) =
-    mutableListOf<MessageComponent>().apply {
-        if (message.hasText())
-            add(TextMessageComponent(message.text))
+    override val incomingComponents by lazy {
+        mutableListOf<IncomingMessageComponent>().apply {
+            if (rawMessage.hasText())
+                add(IncomingText(rawMessage.text))
 
-        if (message.hasPhoto()) message.photo.maxSize()?.let {
-            val url = sender.execute(GetFile(it.fileId)).getFileUrl(bot.botToken)
-            val dataComponent = DataMessageComponent.fromUrl(url)
-            add(ImageMessageComponent(dataComponent))
-        }
+            if (rawMessage.hasPhoto())
+                add(TelegramIncomingPhoto(rawMessage.photo, sender, bot))
 
-        if (message.hasPoll())
-            add(
-                PollMessageComponent(
-                    message.poll.options.map {
-                        VoteData(
-                            it.text,
-                            it.voterCount,
-                        )
-                    },
-                    message.poll.isClosed,
-                    message.poll.isAnonymous,
-                    message.poll.question,
+            if (rawMessage.hasLocation())
+                add(IncomingLocation(rawMessage.location.latitude, rawMessage.location.longitude))
+
+            if (rawMessage.hasVideo())
+                add(
+                    TelegramDataAdapter(
+                        rawMessage.video.fileId,
+                        sender,
+                        bot,
+                        DataMessageComponent.Type.VIDEO
+                    )
                 )
-            )
+
+            if (rawMessage.hasAudio())
+                add(
+                    TelegramDataAdapter(
+                        rawMessage.audio.fileId,
+                        sender,
+                        bot,
+                        DataMessageComponent.Type.AUDIO
+                    )
+                )
+
+            if (rawMessage.hasVoice())
+                add(
+                    TelegramDataAdapter(
+                        rawMessage.voice.fileId,
+                        sender,
+                        bot,
+                        DataMessageComponent.Type.VOICE
+                    )
+                )
+
+            if (rawMessage.hasVoice())
+                add(
+                    TelegramDataAdapter(
+                        rawMessage.document.fileId,
+                        sender,
+                        bot,
+                        DataMessageComponent.Type.DOCUMENT
+                    )
+                )
+        }
     }
+}

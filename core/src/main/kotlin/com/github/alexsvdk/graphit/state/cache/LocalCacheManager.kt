@@ -1,15 +1,17 @@
 package com.github.alexsvdk.graphit.state.cache
 
-import com.github.alexsvdk.graphit.state.Id
-import com.github.alexsvdk.graphit.state.StateManager
+import com.github.alexsvdk.graphit.state.ChatState
 
-class LocalCacheManager<T : Id>(val maxSize: Int) : StateManager<T> {
+open class LocalCacheManager<T>(
+    protected val maxSize: Int = 0,
+) : TemporaryStateManager<T>() {
 
-    private val map: LinkedHashMap<String, T>
+    protected val map: LinkedHashMap<String, T> = if (maxSize > 0) LinkedHashMap(maxSize) else LinkedHashMap()
 
     init {
-        assert(maxSize > 0)
-        map = LinkedHashMap(maxSize)
+        Runtime.getRuntime().addShutdownHook(Thread {
+            map.forEach { key, value -> onRemoveFromCache?.invoke(ChatState(key, value)) }
+        })
     }
 
     val size
@@ -18,8 +20,12 @@ class LocalCacheManager<T : Id>(val maxSize: Int) : StateManager<T> {
     override fun get(id: String): T? = map[id]
 
     override fun set(id: String, data: T) {
-        if (map.size == maxSize)
-            map.remove(map.entries.first().key)
+        if (maxSize > 0 && map.size == maxSize) {
+            val removedKey = map.entries.first().key
+            map.remove(removedKey)?.let { removedValue ->
+                onRemoveFromCache?.invoke(ChatState(removedKey, removedValue))
+            }
+        }
         map[id] = data
     }
 

@@ -1,10 +1,10 @@
 package com.github.alexsvdk.graphit.vk.multibot
 
-import com.github.alexsvdk.graphit.multibot.MultiBotSender
-import com.github.alexsvdk.graphit.multibot.message.KeyboardMessageComponent
-import com.github.alexsvdk.graphit.multibot.message.LocationMessageComponent
-import com.github.alexsvdk.graphit.multibot.message.MessageComponent
-import com.github.alexsvdk.graphit.multibot.textComponent
+import com.github.alexsvdk.graphit.core.message.OutgoingKeyboard
+import com.github.alexsvdk.graphit.core.message.OutgoingLocation
+import com.github.alexsvdk.graphit.core.message.OutgoingText
+import com.github.alexsvdk.graphit.core.sender.MessageSender
+import com.github.alexsvdk.graphit.core.sender.SenderCall
 import com.google.gson.Gson
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
@@ -12,52 +12,74 @@ import com.vk.api.sdk.client.actors.GroupActor
 class VkMultiBotSenderAdapter(
     private val vk: VkApiClient,
     private val actor: GroupActor
-) : MultiBotSender {
+) : MessageSender {
 
     private val gson = Gson()
 
-    override fun sendMessage(chatId: String, data: List<MessageComponent>) {
+    protected fun sendMessage(senderCall: SenderCall) {
+
+        val data = senderCall.outgoingMessages!!
+        val chatId = senderCall.chatId
+
         var sendQuery = vk.messages().send(actor).peerId(chatId.toInt())
 
-        data.filterIsInstance<LocationMessageComponent>().forEach {
-            sendQuery.lat(it.latitude.toFloat())
-            sendQuery.lng(it.longitude.toFloat())
+        data.forEach {
+            when (it) {
+                is OutgoingText -> {
+                    sendQuery.message(it.text)
+                }
+                is OutgoingKeyboard -> {
+                    val keyboard = gson.toJson(
+                        mapOf(
+                            "one_time" to false,
+                            "inline" to false,
+                            "buttons" to it.buttons.map {
+                                it.map {
+                                    mapOf(
+                                        "action" to mapOf(
+                                            "type" to "text",
+                                            "label" to it,
+                                        ),
+                                        "color" to "primary",
+                                    )
+                                }.toList()
+                            }.toList()
+                        )
+                    )
+                    sendQuery.unsafeParam("keyboard", keyboard)
+                }
+                is OutgoingLocation -> {
+                    sendQuery.lat(it.latitude.toFloat())
+                    sendQuery.lng(it.longitude.toFloat())
+                }
+            }
         }
 
-        data.filterIsInstance<KeyboardMessageComponent>().forEach {
-            val keyboard = gson.toJson(
-                mapOf(
-                    "one_time" to false,
-                    "inline" to false,
-                    "buttons" to it.buttons.map {
-                        it.map {
-                            mapOf(
-                                "action" to mapOf(
-                                    "type" to "text",
-                                    "label" to it,
-                                ),
-                                "color" to "primary",
-                            )
-                        }.toList()
-                    }.toList()
-                )
-            )
-            sendQuery.unsafeParam("keyboard", keyboard)
-        }
+        val res = sendQuery.execute()
+        senderCall.result = SenderCall.Result(listOf(res.toString()), null)
 
-        data.textComponent?.let {
-            sendQuery.message(it.text)
-        }
-
-        sendQuery.execute()
     }
 
-    override fun updateMessage(chatId: String, messageId: String, data: List<MessageComponent>) {
+    protected fun updateMessage(senderCall: SenderCall) {
         TODO("Not yet implemented")
     }
 
-    override fun removeMessage(chatId: String, messageId: String) {
-        TODO("Not yet implemented")
+    protected fun removeMessage(senderCall: SenderCall) {
+        val delete = vk.messages().delete(actor, senderCall.messageId!!.toInt())
+        delete.execute()
+        senderCall.result = SenderCall.Result(listOf(senderCall.messageId!!), null)
+    }
+
+    override fun executeCall(senderCall: SenderCall) {
+        try {
+            when (senderCall.type) {
+                SenderCall.Type.SEND -> sendMessage(senderCall)
+                SenderCall.Type.UPDATE -> updateMessage(senderCall)
+                SenderCall.Type.DELETE -> removeMessage(senderCall)
+            }
+        } catch (e: Exception) {
+            senderCall.result = SenderCall.Result(senderCall.result?.messageIds, e)
+        }
     }
 
 }

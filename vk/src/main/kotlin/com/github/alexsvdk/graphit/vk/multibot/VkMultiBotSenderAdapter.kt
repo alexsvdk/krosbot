@@ -1,5 +1,6 @@
 package com.github.alexsvdk.graphit.vk.multibot
 
+import com.github.alexsvdk.graphit.core.message.KeyboardMessageComponent
 import com.github.alexsvdk.graphit.core.message.OutgoingKeyboard
 import com.github.alexsvdk.graphit.core.message.OutgoingLocation
 import com.github.alexsvdk.graphit.core.message.OutgoingText
@@ -32,7 +33,7 @@ class VkMultiBotSenderAdapter(
                     val keyboard = gson.toJson(
                         mapOf(
                             "one_time" to false,
-                            "inline" to false,
+                            "inline" to (it.type == KeyboardMessageComponent.Type.INLINE),
                             "buttons" to it.buttons.map {
                                 it.map {
                                     mapOf(

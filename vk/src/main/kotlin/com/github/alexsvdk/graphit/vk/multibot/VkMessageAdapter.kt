@@ -25,7 +25,7 @@ class VkMessageAdapter(
 private fun extractComponents(msg: Message): List<IncomingMessageComponent> {
     val res = mutableListOf<IncomingMessageComponent>()
 
-    msg.body?.let {
+    msg.text?.let {
         res.add(IncomingText(it))
     }
 
@@ -34,11 +34,11 @@ private fun extractComponents(msg: Message): List<IncomingMessageComponent> {
             res.add(VkIncomingPhoto(it))
         }
         attachment?.doc?.let {
-            val data = IncomingData.fromUrl(it.url, DataMessageComponent.Type.DOCUMENT)
+            val data = IncomingData.fromUrl(it.url.toURL(), DataMessageComponent.Type.DOCUMENT)
             res.add(data)
         }
         attachment?.audio?.let {
-            val data = IncomingData.fromUrl(it.url, DataMessageComponent.Type.AUDIO)
+            val data = IncomingData.fromUrl(it.url.toURL(), DataMessageComponent.Type.AUDIO)
             res.add(data)
         }
     }

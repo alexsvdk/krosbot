@@ -12,13 +12,13 @@ class VkUserInfoAdapter(
 ) : UserInfo {
 
     val userInfo by lazy {
-        vk.users().get(actor).userIds(raw.userId.toString()).execute().firstOrNull()
+        vk.users().get(actor).userIds(raw.fromId.toString()).execute().firstOrNull()
     }
-    override val userId: String get() = raw.userId.toString()
+    override val userId: String get() = raw.fromId.toString()
     override val isBot: Boolean = false
     override val firstName: String? get() = userInfo?.firstName
     override val lastName: String? get() = userInfo?.lastName
-    override val nickName: String get() = "id${raw.userId}"
-    override val imageUrl: String? get() = userInfo?.photoMaxOrig
+    override val nickName: String get() = "id${raw.fromId}"
+    override val imageUrl: String? get() = userInfo?.photoMaxOrig.toString()
 
 }

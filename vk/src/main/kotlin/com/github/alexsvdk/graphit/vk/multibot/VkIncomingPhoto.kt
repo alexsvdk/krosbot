@@ -18,7 +18,7 @@ class VkIncomingPhoto(
 
     override fun getData(size: MultiSizeMediaMessageComponent.Size): DataMessageComponent {
         assert(size is VkIncomingPhoto) { "Vk bot can process only VkIncomingPhoto" }
-        return IncomingData.fromUrl((size as VkIncomingPhoto).rawSize.src, DataMessageComponent.Type.IMAGE)
+        return IncomingData.fromUrl((size as VkIncomingPhoto).rawSize.src.toURL(), DataMessageComponent.Type.IMAGE)
     }
 
 }

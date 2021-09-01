@@ -45,10 +45,8 @@ open class VkGraphitBot(
         if (maxMsgId > 0) {
             eventsQuery.maxMsgId(maxMsgId)
         }
-        val messages: List<Message> = eventsQuery
-            .execute()
-            .messages
-            .messages
+        val messages: List<Message> = eventsQuery.execute().messages.items
+
         if (!messages.isEmpty()) {
             try {
                 ts = vk.messages()

@@ -66,7 +66,7 @@ class VkMultiBotSenderAdapter(
     }
 
     protected fun removeMessage(senderCall: SenderCall) {
-        val delete = vk.messages().delete(actor, senderCall.messageId!!.toInt())
+        val delete = vk.messages().delete(actor).messageIds(senderCall.messageId!!.toInt())
         delete.execute()
         senderCall.result = SenderCall.Result(listOf(senderCall.messageId!!), null)
     }

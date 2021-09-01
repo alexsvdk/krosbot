@@ -31,6 +31,6 @@ dependencies {
     api("org.apache.commons:commons-math3:3.6.1")
 
     implementation(project(":core"))
-    api("com.vk.api:sdk:0.5.12")
+    api("com.vk.api:sdk:1.0.9")
 
 }

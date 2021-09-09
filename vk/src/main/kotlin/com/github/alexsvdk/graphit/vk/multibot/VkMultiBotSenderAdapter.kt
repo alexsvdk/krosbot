@@ -9,6 +9,10 @@ import com.github.alexsvdk.graphit.core.sender.SenderCall
 import com.google.gson.Gson
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
+import com.vk.api.sdk.objects.messages.Keyboard
+import com.vk.api.sdk.objects.messages.KeyboardButton
+import com.vk.api.sdk.objects.messages.KeyboardButtonAction
+import com.vk.api.sdk.objects.messages.KeyboardButtonColor
 
 class VkMultiBotSenderAdapter(
     private val vk: VkApiClient,
@@ -30,24 +34,22 @@ class VkMultiBotSenderAdapter(
                     sendQuery.message(it.text)
                 }
                 is OutgoingKeyboard -> {
-                    val keyboard = gson.toJson(
-                        mapOf(
-                            "one_time" to false,
-                            "inline" to (it.type == KeyboardMessageComponent.Type.INLINE),
-                            "buttons" to it.buttons.map {
-                                it.map {
-                                    mapOf(
-                                        "action" to mapOf(
-                                            "type" to "text",
-                                            "label" to it,
-                                        ),
-                                        "color" to "primary",
-                                    )
-                                }.toList()
+                    val keyboard = Keyboard().apply {
+                        inline = it.type == KeyboardMessageComponent.Type.INLINE
+                        buttons = it.buttons.map {
+                            it.map {
+                                KeyboardButton().apply {
+                                    color = KeyboardButtonColor.DEFAULT
+                                    action = KeyboardButtonAction().apply {
+                                        label = it.text
+                                        payload = it.callbackData
+                                        link = it.url
+                                    }
+                                }
                             }.toList()
-                        )
-                    )
-                    sendQuery.unsafeParam("keyboard", keyboard)
+                        }.toList()
+                    }
+                    sendQuery.keyboard(keyboard)
                 }
                 is OutgoingLocation -> {
                     sendQuery.lat(it.latitude.toFloat())

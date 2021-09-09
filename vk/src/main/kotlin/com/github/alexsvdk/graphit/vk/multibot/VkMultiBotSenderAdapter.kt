@@ -14,7 +14,7 @@ import com.vk.api.sdk.objects.messages.KeyboardButton
 import com.vk.api.sdk.objects.messages.KeyboardButtonAction
 import com.vk.api.sdk.objects.messages.KeyboardButtonColor
 
-class VkMultiBotSenderAdapter(
+open class VkMultiBotSenderAdapter(
     private val vk: VkApiClient,
     private val actor: GroupActor
 ) : MessageSender {
@@ -26,7 +26,10 @@ class VkMultiBotSenderAdapter(
         val data = senderCall.outgoingMessages!!
         val chatId = senderCall.chatId
 
-        var sendQuery = vk.messages().send(actor).peerId(chatId.toInt())
+        val sendQuery = vk.messages()
+            .send(actor)
+            .peerId(chatId.toInt())
+            .randomId((Math.random() * Int.MAX_VALUE).toInt())
 
         data.forEach {
             when (it) {

@@ -9,10 +9,7 @@ import com.github.alexsvdk.graphit.core.sender.SenderCall
 import com.google.gson.Gson
 import com.vk.api.sdk.client.VkApiClient
 import com.vk.api.sdk.client.actors.GroupActor
-import com.vk.api.sdk.objects.messages.Keyboard
-import com.vk.api.sdk.objects.messages.KeyboardButton
-import com.vk.api.sdk.objects.messages.KeyboardButtonAction
-import com.vk.api.sdk.objects.messages.KeyboardButtonColor
+import com.vk.api.sdk.objects.messages.*
 
 open class VkMultiBotSenderAdapter(
     private val vk: VkApiClient,
@@ -45,8 +42,15 @@ open class VkMultiBotSenderAdapter(
                                     color = KeyboardButtonColor.DEFAULT
                                     action = KeyboardButtonAction().apply {
                                         label = it.text
-                                        payload = it.callbackData
-                                        link = it.url
+                                        if (it.callbackData != null) {
+                                            type = TemplateActionTypeNames.CALLBACK
+                                            payload = it.callbackData
+                                        } else if (it.url != null) {
+                                            type = TemplateActionTypeNames.OPEN_LINK
+                                            link = it.url
+                                        } else {
+                                            type = TemplateActionTypeNames.TEXT
+                                        }
                                     }
                                 }
                             }.toList()

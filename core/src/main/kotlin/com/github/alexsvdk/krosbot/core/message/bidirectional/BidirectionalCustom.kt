@@ -1,0 +1,3 @@
+package com.github.alexsvdk.krosbot.core.message
+
+interface BidirectionalCustom: BidirectionalMessageComponent

@@ -1,1 +1,1 @@
-# Graphit core library
+# krosbot core library
